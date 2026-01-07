@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pixel Cake Celebration</title>
+<style>
+/* --- ALL YOUR EXISTING CSS UNCHANGED --- */
+</style>
+</head>
+<body>
+
+<!-- 🎵 BACKGROUND MUSIC (ADDED) -->
+<audio id="bgMusic" loop>
+  <source src="happy-birthday.mp3" type="audio/mpeg">
+</audio>
+
+<div id="instruction">Click a flame to blow all candles!</div>
+<div id="birthdayText">Happy Birthday Moiz!</div>
+
+<div class="cake">
+  <!-- ALL YOUR EXISTING CAKE HTML UNCHANGED -->
+</div>
+
+<script>
+const flames = document.querySelectorAll('[data-flame]');
+const instruction = document.getElementById('instruction');
+const birthdayText = document.getElementById('birthdayText');
+const bgMusic = document.getElementById('bgMusic'); // 🎵 ADDED
+
+bgMusic.volume = 0.25; // soft background volume 🎶
+
+function createMegaConfetti(x, y) {
+  const colors = ['#ff3c38','#ffdd3c','#3cff72','#3c8bff','#d13cff','#ff8c00','#00ffff','#ff00ff'];
+  for (let i=0;i<150;i++) {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    confetti.style.left = `${x}px`;
+    confetti.style.top = `${y}px`;
+    const dx = (Math.random()-0.5)*window.innerWidth*1.2 + 'px';
+    const dy = Math.random()*-400 + 'px';
+    const dyFinal = Math.random()*window.innerHeight + 200 + 'px';
+    confetti.style.setProperty('--x', dx);
+    confetti.style.setProperty('--y', dy);
+    confetti.style.setProperty('--yFinal', dyFinal);
+    confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+    confetti.style.width = `${8 + Math.random()*8}px`;
+    confetti.style.height = `${8 + Math.random()*8}px`;
+    document.body.appendChild(confetti);
+    confetti.addEventListener('animationend', () => confetti.remove());
+  }
+}
+
+function createHearts() {
+  for (let i=0;i<20;i++){
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '💖';
+    heart.style.left = Math.random()*window.innerWidth + 'px';
+    heart.style.fontSize = 14 + Math.random()*20 + 'px';
+    heart.style.animationDuration = 3 + Math.random()*2 + 's';
+    document.body.appendChild(heart);
+    heart.addEventListener('animationend', () => heart.remove());
+  }
+}
+
+flames.forEach(f => {
+  f.addEventListener('click', () => {
+
+    // 🎵 PLAY MUSIC ON INTERACTION (ADDED)
+    if (bgMusic.paused) {
+      bgMusic.play();
+    }
+
+    flames.forEach(flame => flame.style.opacity = '0');
+    instruction.style.display = 'none';
+
+    const cakeRect = document.querySelector('.cake').getBoundingClientRect();
+    const x = cakeRect.left + cakeRect.width/2;
+    const y = cakeRect.top;
+    createMegaConfetti(x, y);
+
+    createHearts();
+    setInterval(createHearts, 500);
+
+    birthdayText.style.opacity = '1';
+    birthdayText.style.color = '#eac8f0';
+    birthdayText.style.animation =
+      'textFadeIn 1s forwards, bounce 1s infinite alternate ease-in-out';
+  });
+});
+</script>
+
+</body>
+</html>
